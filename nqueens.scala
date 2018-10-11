@@ -16,13 +16,13 @@ case class Queen(x: Int, y: Int) extends Piece {
 case class Solution(queens: List[Queen]) {
     val n = queens.length
     override def toString: String = {
-        (0 to n - 1).map { i =>
-            ((0 to n - 1).map { j =>
-                (queens contains Queen(i, j)) match {
+        (0 to n - 1).map { i: Int =>
+            (0 to n - 1).map { j =>
+                queens contains Queen(i, j) match {
                     case true => "1 "
                     case false => "0 "
                 }
-            }).mkString("")
+            }.mkString("")
         }.mkString("\n")
     }
 }
@@ -38,10 +38,10 @@ object Solution {
     // Recursive backtracing to find a full Solution with n Queen pieces
     def backtracking(n: Int, solution: Solution): Solution = {
         solution.queens match {
-            case hd::tail if (hd.x == n) => backtracking(n, Solution(Queen(tail.head.x + 1, tail.head.y) +: tail.tail))
-            case hd::tail if promising(solution) => solution.queens.length match {
+            case hd::tail if hd.x == n => backtracking(n, Solution(Queen(tail.head.x + 1, tail.head.y) +: tail.tail))
+            case queens @ hd::_ if promising(solution) => queens.length match {
                 case `n` => solution  // found a valid solution
-                case _ => backtracking(n, Solution(Queen(0, hd.y + 1) +: solution.queens))
+                case _ => backtracking(n, Solution(Queen(0, hd.y + 1) +: queens))
             }
             case hd::tail => backtracking(n, Solution(Queen(hd.x + 1, hd.y) +: tail))
         }
